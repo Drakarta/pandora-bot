@@ -43,6 +43,7 @@ USER appuser
 COPY . .
 
 # Expose the port that the application listens on.
+EXPOSE 8000
 
 # Run the application.
-CMD cd src && python3 main.py
+CMD sh start.sh
