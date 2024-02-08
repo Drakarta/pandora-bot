@@ -13,23 +13,25 @@ zone = pytz.timezone("Europe/Amsterdam")
 class Clock(commands.Cog, name="Clock"):
     def __init__(self, bot):
         self.bot = bot
+        self.channel_id = int(os.getenv("CLOCK_CHANNEL"))
         self.clock.start()
 
-    @tasks.loop(seconds=600)
+    @tasks.loop(minutes=10)
     async def clock(self):
-        channel = await self.bot.fetch_channel(int(os.getenv("CLOCK_CHANNEL")))
-        x = str((int(datetime.datetime.now(tz=zone).strftime('%M')) // 10) * 10)
-        y = "{:0>2}".format(x)
-        await channel.edit(name=f"Time: {datetime.datetime.now(tz=zone).strftime('%H')}:{y} [{datetime.datetime.now(tz=zone).tzname()}]")
-    
+        channel = self.bot.get_channel(self.channel_id)
+        if not channel:
+            print(f"Failed to find channel with ID {self.channel_id}")
+            return
+        current_time = datetime.datetime.now(tz=zone)
+        formatted_minutes = "{:02}".format((current_time.minute // 10) * 10)
+        await channel.edit(name=f"Time: {current_time.strftime('%H')}:{formatted_minutes} [{current_time.tzname()}]")
+
     @clock.before_loop
-    async def before_clock(self):   
+    async def before_clock(self):
         await self.bot.wait_until_ready()
-        channel = await self.bot.fetch_channel(int(os.getenv("CLOCK_CHANNEL")))
-        x = str((int(datetime.datetime.now(tz=zone).strftime('%M')) // 10) * 10)
-        y = "{:0>2}".format(x)
-        await channel.edit(name=f"Time: {datetime.datetime.now(tz=zone).strftime('%H')}:{y} [{datetime.datetime.now(tz=zone).tzname()}]")
-        await asyncio.sleep((((((int(datetime.datetime.now().strftime('%M')) // 10) * 10) + 10) - int(datetime.datetime.now().strftime('%M'))) * 60) - int(datetime.datetime.now().strftime('%S')))
+        current_time = datetime.datetime.now()
+        delay_seconds = (10 - (current_time.minute % 10)) * 60 - current_time.second
+        await asyncio.sleep(delay_seconds)
 
 async def setup(bot):
     await bot.add_cog(Clock(bot))

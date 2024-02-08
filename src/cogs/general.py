@@ -15,5 +15,9 @@ class General(commands.Cog):
     async def ping(self, interaction: discord.Interaction) -> None:
         await interaction.response.send_message(f"Pong! ``{round(self.bot.latency * 1000)}ms``")
 
+    @app_commands.command(name="hello", description="Hello")
+    async def hello(self, interaction: discord.Interaction) -> None:
+        await interaction.response.send_message(f"Hello")
+
 async def setup(bot):
     await bot.add_cog(General(bot))

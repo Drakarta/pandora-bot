@@ -7,7 +7,7 @@ from discord.ext import commands
 
 load_dotenv()
 
-intents = discord.Intents.default()
+intents = discord.Intents.all()
 
 class Bot(commands.Bot):
     def __init__(self):
@@ -34,7 +34,7 @@ async def on_ready():
 @bot.command()
 @commands.is_owner()
 async def sync(ctx):
-    await bot.tree.sync(guild=None)
+    await bot.tree.sync()
     await ctx.send('Command tree synced.')
 
 @bot.command()
@@ -44,7 +44,7 @@ async def reload(ctx):
         if filename.endswith(".py"):
             cog_name = f"cogs.{filename[:-3]}"
             try:
-                bot.unload_extension(cog_name)
+                await bot.unload_extension(cog_name)
             except commands.ExtensionNotLoaded:
                 pass
             finally:
