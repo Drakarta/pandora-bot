@@ -10,6 +10,7 @@ load_dotenv()
 
 zone = pytz.timezone("Europe/Amsterdam")
 
+
 class Clock(commands.Cog, name="Clock"):
     def __init__(self, bot):
         self.bot = bot
@@ -24,7 +25,9 @@ class Clock(commands.Cog, name="Clock"):
             return
         current_time = datetime.datetime.now(tz=zone)
         formatted_minutes = "{:02}".format((current_time.minute // 10) * 10)
-        await channel.edit(name=f"Time: {current_time.strftime('%H')}:{formatted_minutes} [{current_time.tzname()}]")
+        await channel.edit(
+            name=f"Time: {current_time.strftime('%H')}:{formatted_minutes} [{current_time.tzname()}]"
+        )
 
     @clock.before_loop
     async def before_clock(self):
@@ -32,6 +35,7 @@ class Clock(commands.Cog, name="Clock"):
         current_time = datetime.datetime.now()
         delay_seconds = (10 - (current_time.minute % 10)) * 60 - current_time.second
         await asyncio.sleep(delay_seconds)
+
 
 async def setup(bot):
     await bot.add_cog(Clock(bot))

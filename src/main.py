@@ -9,6 +9,7 @@ load_dotenv()
 
 intents = discord.Intents.all()
 
+
 class Bot(commands.Bot):
     def __init__(self):
         super().__init__(command_prefix="~", intents=intents, case_insensitive=False)
@@ -23,19 +24,25 @@ class Bot(commands.Bot):
                     print(f"Failed to load {filename}: {e}")
         print(f"Logged in as {self.user}")
 
+
 bot = Bot()
 
-bot.remove_command('help')
+bot.remove_command("help")
+
 
 @bot.event
 async def on_ready():
-    await bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="with my box."))
+    await bot.change_presence(
+        status=discord.Status.idle, activity=discord.Game(name="with my box.")
+    )
+
 
 @bot.command()
 @commands.is_owner()
 async def sync(ctx):
     await bot.tree.sync()
-    await ctx.send('Command tree synced.')
+    await ctx.send("Command tree synced.")
+
 
 @bot.command()
 @commands.is_owner()
@@ -50,6 +57,7 @@ async def reload(ctx):
             finally:
                 await bot.load_extension(cog_name)
                 print(f"Reloaded {filename}")
-    await ctx.send('Cogs reloaded.')
+    await ctx.send("Cogs reloaded.")
+
 
 bot.run(os.getenv("DISCORD_TOKEN"))
