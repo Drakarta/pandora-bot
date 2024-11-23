@@ -8,7 +8,7 @@ from discord.ext import commands
 load_dotenv()
 
 
-class voiceChannel(commands.Cog):
+class VoiceChannel(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.create_vc_channel_id = int(os.getenv("CREATE_VC_CHANNEL"))
@@ -41,6 +41,7 @@ class voiceChannel(commands.Cog):
                         member.guild.get_role(self.vc_owner_role_id)
                     )
                     return
+            if len(before.channel.members) == 0:
                 await before.channel.delete()
 
     @app_commands.command(name="channel", description="Create a voice channel.")
@@ -113,4 +114,4 @@ class voiceChannel(commands.Cog):
 
 
 async def setup(bot):
-    await bot.add_cog(voiceChannel(bot))
+    await bot.add_cog(VoiceChannel(bot))

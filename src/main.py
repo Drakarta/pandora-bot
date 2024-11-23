@@ -1,5 +1,4 @@
 from dotenv import load_dotenv
-import time
 
 import os
 import discord
@@ -12,7 +11,7 @@ intents = discord.Intents.all()
 
 class Bot(commands.Bot):
     def __init__(self):
-        super().__init__(command_prefix="~", intents=intents, case_insensitive=False)
+        super().__init__(command_prefix="~", intents=intents, case_insensitive=True)
 
     async def setup_hook(self):
         for filename in os.listdir("./cogs"):
